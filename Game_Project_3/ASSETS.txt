@@ -1,0 +1,69 @@
+Used Assets Licenses and Credit:
+
+
+1- mushroom1wcolor.png
+-Creator: Ebraheem Mustafa
+-Licensing: Creative Commons Zero v1.0 Universal (public domain)
+
+2- step1.wav, step2.wav, step3.wav
+-Creator: Ebraheem Mustafa
+-Licensing: Creative Commons Zero v1.0 Universal (public domain)
+
+3- PickupSound.wav
+-Creator: Ebraheem Mustafa
+-Licensing: Creative Commons Zero v1.0 Universal (public domain)
+
+4- MenuSong.ogg
+-Creator: Ebraheem Mustafa
+-Licensing: Not allowed for distribution of modification of any kind outside original game project.
+
+5- IngameSong.ogg
+-Creator: Ebraheem Mustafa
+-Licensing: Not allowed for distribution of modification of any kind outside original game project.
+
+6- clearsky.png
+-Creator: https://craftpix.net/
+-Licensing: Allowed for commercial and personal projects, allowed for modification.
+			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
+
+7- northernlight.png
+-Creator: https://craftpix.net/
+-Licensing: Allowed for commercial and personal projects, allowed for modification.
+			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
+
+8-stars.png
+-Creator: https://craftpix.net/
+-Modified by Ebraheem Mustafa (Star designs from above used background were extracted,
+ redrawn and interpolated frame-wise manually.)
+-Licensing: Allowed for commercial and personal projects, allowed for modification.
+			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
+
+9-MenuWood.png
+-Creator: Narik/NarikTheArtist
+-Modified By Ebraheem Mustafa (It's been elongated horizontally to become shaped like a menu)
+-Licensing: Creative Commons Zero v1.0 Universal
+-Link: https://soulofkiran.itch.io/pixel-art-wooden-gui-v1
+
+10-WoodGUI.png
+-Creator: Narik/NarikTheArtist
+-Licensing: Creative Commons Zero v1.0 Universal
+-Link: https://soulofkiran.itch.io/pixel-art-wooden-gui-v1
+
+11-ninja.png
+-Creator: Penusbmic
+-Modification: extrapolated 7th new frame for standing still.
+-Licensing: Allowed for coomercial use and modification.
+-Link:  https://penusbmic.itch.io/characterpack1
+
+12-ThaleahFat.ttf (font)
+-Creator: Rick Hoppmann
+-License: CC-BY 4.0 (free for commercial use, or any other purpose)
+-Link: https://tinyworlds.itch.io/free-pixel-font-thaleah
+
+13-game_background_1.png
+-Creator: https://craftpix.net/
+-Licensing: Allowed for commercial and personal projects, allowed for modification.
+			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
+-Link: https://craftpix.net/freebies/free-forest-battle-backgrounds/
+
+
