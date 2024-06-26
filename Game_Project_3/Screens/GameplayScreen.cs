@@ -26,7 +26,7 @@ namespace Game_Project_3.Screens
     // This screen implements the actual game logic. It is just a
     // placeholder to get the idea across: you'll probably want to
     // put some more interesting gameplay in here!
-    public class ExperimentalGame : GameScreen
+    public class GameplayScreen : GameScreen
     {
         private ContentManager _content;
         /*        private SpriteFont _gameFont;
@@ -76,7 +76,7 @@ namespace Game_Project_3.Screens
         InnerWaveParticlesOne _innerWaveEffectOne;
         InnerWaveParticlesTwo _innerWaveEffectTwo;
 
-        public ExperimentalGame()
+        public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
