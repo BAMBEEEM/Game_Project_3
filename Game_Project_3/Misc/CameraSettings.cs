@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Game_Project_3.Misc
 {
+    /// <summary>
+    /// A static class that helps with storing and unifying camera settings between all sprites.
+    /// </summary>
     public static class CameraSettings
     {
         public static Matrix transform = Matrix.Identity;

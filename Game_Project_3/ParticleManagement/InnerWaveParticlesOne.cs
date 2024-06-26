@@ -6,6 +6,9 @@ using Game_Project_3.Misc;
 
 namespace Game_Project_3.ParticleManagement
 {
+    /// <summary>
+    /// A class representing Inner Particle Effect for the tidal wave, Variation #1
+    /// </summary>
     public class InnerWaveParticlesOne : ParticleSystem
     {
         private Rectangle _source;

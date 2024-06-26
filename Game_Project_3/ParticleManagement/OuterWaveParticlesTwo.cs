@@ -6,6 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Game_Project_3.ParticleManagement
 {
+
+    /// <summary>
+    /// A class representing Outer Particle Effect for the tidal wave, Variation #2
+    /// </summary>
     public class OuterWaveParticlesTwo : ParticleSystem
     {
         Rectangle _source;

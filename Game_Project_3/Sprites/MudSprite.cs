@@ -12,15 +12,13 @@ using Game_Project_3.ParticleManagement;
 namespace Game_Project_3.Sprites
 {
 
+    /// <summary>
+    /// A class representing a singular mud sprite
+    /// </summary>
     public class MudSprite
     {
 
-
-
-
-
         private int _animationVarient;
-
 
         private Texture2D _texture;
 
@@ -38,6 +36,9 @@ namespace Game_Project_3.Sprites
 
         private Rectangle _source;
 
+        /// <summary>
+        /// Sets the mud source depending on its variation and draws its bound
+        /// </summary>
         public void SetSource()
         {
             switch (_animationVarient)
@@ -86,6 +87,9 @@ namespace Game_Project_3.Sprites
             }
         }
 
+        /// <summary>
+        /// Helper method to respawn if two muds fall at the same place
+        /// </summary>
         public void Respawn()
         {
             Position.X = RandomHelper.NextFloat(0, 900) + (Section * 900);
@@ -102,14 +106,14 @@ namespace Game_Project_3.Sprites
             Position.X = RandomHelper.NextFloat(0, 900) + (Section * 900);
 
             if (_source.Height < 110)
-            Position.Y = RandomHelper.NextFloat(185, 539);
+                Position.Y = RandomHelper.NextFloat(185, 539);
             else Position.Y = RandomHelper.NextFloat(185, 493);
             SetSource();
 
         }
 
 
-        public void Draw( SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, Position, _source, Color, 0, new Vector2(8, 0), (float)1, SpriteEffects.None, 0.2f);
         }

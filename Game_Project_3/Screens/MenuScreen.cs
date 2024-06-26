@@ -262,7 +262,7 @@ namespace Game_Project_3.Screens
         {
             DifficultySettings.InitializeDifficulty();
             ScreenManager.Game.ResetElapsedTime();
-            var gameplayScreen = new ExperimentalGame();
+            var gameplayScreen = new GameplayScreen();
             ScreenManager.AddScreen(gameplayScreen, PlayerIndex.One);
             ExitScreen();
         }

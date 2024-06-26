@@ -14,7 +14,9 @@ namespace Game_Project_3.Background
 {
 
 
-
+    /// <summary>
+    /// A class representing all texts in the MenuScreen
+    /// </summary>
     public class LoadingText
     {
         private Texture2D _spaceBarButton;

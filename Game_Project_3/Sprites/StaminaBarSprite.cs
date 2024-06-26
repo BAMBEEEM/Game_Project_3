@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Game_Project_3.Sprites
 {
+    /// <summary>
+    /// A class representing the Stamina Bar overlay
+    /// </summary>
     public class StaminaBarSprite
     {
         private Texture2D texture;
@@ -22,6 +25,9 @@ namespace Game_Project_3.Sprites
 
         public Color color = Color.White;
 
+        /// <summary>
+        /// Stamina Capacity
+        /// </summary>
         public float Stamina { private get; set; } = 100f;
 
         public void LoadContent(ContentManager content)

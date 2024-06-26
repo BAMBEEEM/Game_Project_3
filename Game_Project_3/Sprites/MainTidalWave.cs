@@ -11,6 +11,9 @@ using Game_Project_3.Misc;
 
 namespace Game_Project_3.Sprites
 {
+    /// <summary>
+    /// A class representing the main tidal wave.
+    /// </summary>
     public class MainTidalWave
     {
         private Texture2D texture;

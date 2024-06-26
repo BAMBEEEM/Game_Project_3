@@ -20,7 +20,7 @@ namespace Game_Project_3.Sprites
 {
 
     /// <summary>
-    /// A class representing a slime ghost
+    /// A class representing a ninja
     /// </summary>
     public class CharacterSprite
     {

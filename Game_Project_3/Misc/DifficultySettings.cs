@@ -8,6 +8,10 @@ using Game_Project_3.ParticleManagement;
 
 namespace Game_Project_3.Misc
 {
+
+    /// <summary>
+    /// A static class responsible for difficulty settings.
+    /// </summary>
     public static class DifficultySettings
     {
         public static Difficulty SetDifficulty = Difficulty.Easy;
@@ -34,6 +38,9 @@ namespace Game_Project_3.Misc
 
         public static float DrownTime;
 
+        /// <summary>
+        /// Sets game settings depending on difficulty level
+        /// </summary>
         public static void InitializeDifficulty()
         {
             if (SetDifficulty == Difficulty.Easy)
