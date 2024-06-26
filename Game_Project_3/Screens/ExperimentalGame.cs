@@ -52,24 +52,11 @@ namespace Game_Project_3.Screens
         private MudSprite[] _mud = new MudSprite[13*DifficultySettings.MudPerSection];
         private StaminaBarSprite _staminaSprite;
 
-        // private int[] _mushroomsLeft = new int[_maxLevel];
-        private int _finalScore;
-
-        private bool _calculated = false;
-
-        private int level = 1;
-
         private bool _won = false;
-
-        private TimeSpan time;
-
-        private TimeSpan _extraTime;
 
         private TimeSpan _elapsedTime = new TimeSpan();
 
         private Color _timeColor;
-
-        private const int _maxLevel = 7;
 
         private float _shakeTime;
 
@@ -132,8 +119,6 @@ namespace Game_Project_3.Screens
                 mud.LoadContent(_content);
             }
 
-            _finalScore = 0;
-
             _mainCharacter = new CharacterSprite();
 
             _mainCharacter.LoadContent(_content);
@@ -163,8 +148,7 @@ namespace Game_Project_3.Screens
 
 
 
-            /*            foreach (List<MushroomSprite> LMushroom in _mushrooms)
-                            foreach (MushroomSprite mushroom in LMushroom) mushroom.LoadContent(_content);*/
+
             /*            // _gameFont = _content.Load<SpriteFont>("gamefont");
 
                         // A real game would probably have more content than this sample, so
@@ -283,7 +267,7 @@ namespace Game_Project_3.Screens
 
                 for (int i = 0; i < 13 * DifficultySettings.MudPerSection; i += DifficultySettings.MudPerSection)
                 {
-
+                    // if normal or hard difficulty
                     if (DifficultySettings.SetDifficulty == Enums.Difficulty.Normal || DifficultySettings.SetDifficulty == Enums.Difficulty.Hard)
                     {
                         while (CollisionHelper.Collides(_mud[i].Bounds, _mud[i + 1].Bounds))
@@ -296,7 +280,7 @@ namespace Game_Project_3.Screens
                         while (CollisionHelper.Collides(_mud[i + 1].Bounds, _mud[i + 2].Bounds))
                             _mud[i + 2].Respawn();
                     }
-                    else // easy
+                    else // if easy
                     {
                         while (CollisionHelper.Collides(_mud[i].Bounds, _mud[i + 1].Bounds))
                         {
@@ -462,13 +446,7 @@ namespace Game_Project_3.Screens
             spriteBatch.Begin();
             _staminaSprite.Draw(spriteBatch);
 
-            if (_startTimer <= 0)
-            { }
-/*            else if (_startTimer > 0)
-            {
-                spriteBatch.DrawString(spriteFont, "RUN! -->", new Vector2(355, 75) * 1.6f, Color.White);
-            }*/
-            else if (_startTimer > 0)
+            if (_startTimer > 0)
             {
                 spriteBatch.DrawString(spriteFont, "RUN! -->", new Vector2(355, 75) * 1.6f, Color.White);
             }

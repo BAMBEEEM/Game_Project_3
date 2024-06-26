@@ -141,9 +141,9 @@ namespace Game_Project_3.Sprites
             if (WinManeuver == true)
             {
                 CurrentPosition += new Vector2(2, 0) * 1.6f * CharBonusSpeed;
-                if (CurrentPosition.Y < 385)
+                if (CurrentPosition.Y < 380)
                     CurrentPosition += new Vector2(0, 2) * 1.6f * CharBonusSpeed;
-            else if (CurrentPosition.Y > 389) CurrentPosition += new Vector2(0, -2) * 1.6f * CharBonusSpeed;
+            else if (CurrentPosition.Y > 385) CurrentPosition += new Vector2(0, -2) * 1.6f * CharBonusSpeed;
             }
 
             if (LossManeuver == true)
