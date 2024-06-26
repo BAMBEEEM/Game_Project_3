@@ -8,8 +8,9 @@ namespace Game_Project_3.Enums
 {
     public enum StepSound
     {
-        Left,
-        Right,
-        LightRight
+        Left = 1,
+        LightRight,
+        LeftWithMud,
+        RightWithMud
     }
 }

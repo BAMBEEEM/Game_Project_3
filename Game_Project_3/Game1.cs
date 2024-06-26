@@ -18,6 +18,8 @@ namespace Game_Project_3
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();

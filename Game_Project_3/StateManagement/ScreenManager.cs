@@ -18,6 +18,8 @@ namespace Game_Project_3.StateManagement
         private readonly ContentManager _content;
         private readonly InputState _input = new InputState();
 
+
+
         private bool _isInitialized;
 
         /// <summary>
@@ -59,6 +61,7 @@ namespace Game_Project_3.StateManagement
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+    
             BlankTexture = _content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load thier content 

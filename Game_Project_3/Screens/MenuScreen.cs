@@ -14,6 +14,7 @@ using Game_Project_3.GameButtons;
 using SharpDX.Direct2D1;
 using Microsoft.Xna.Framework.Audio;
 using System.Reflection.Metadata;
+using Game_Project_3.Misc;
 
 namespace Game_Project_3.Screens
 {
@@ -27,18 +28,14 @@ namespace Game_Project_3.Screens
         bool _isPlaying = false;
         InputAction _skip;
 
-        private SkySprite _sky;
-        private NorthernLightSprite _northernLight;
-        private StarSprite[] _stars = new StarSprite[7];
-        private MenuWood _wood;
-        private StartButton _startButton;
-        private QuitButton _quitButton;
+        private ForestSprite __forestIntro;
         private LoadingText _loadingText;
+
 
 
         private SpriteFont _arial;
         private InputState _inputState;
-        private Song _menuSong;
+        private Song _introSong;
 
         private InputAction _menuUp;
         private InputAction _menuDown;
@@ -48,10 +45,13 @@ namespace Game_Project_3.Screens
         private bool _isTransitioning = false;
         private float _timeSinceTransition;
 
+        private MenuWood _wood;
+        private StartButton _startButton;
+        private DifficultyButton _difficultyButton;
 
 
         TimeSpan introProgress;
-        //Song _menuSong;
+
 
 
 
@@ -75,40 +75,28 @@ namespace Game_Project_3.Screens
             {
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
             }
-            _sky = new SkySprite();
-            _northernLight = new NorthernLightSprite();
-            for (int i = 0; i < 7; i++)
-            {
-                _stars[i] = new StarSprite();
-            }
-
-            _startButton = new StartButton();
-            _quitButton = new QuitButton();
             _inputState = new InputState();
             _wood = new MenuWood();
+            _startButton = new StartButton();
+            _difficultyButton = new DifficultyButton();
+            __forestIntro = new ForestSprite();
             _loadingText = new LoadingText();
 
-            _sky.LoadContent(_content);
-            _northernLight.LoadContent(_content);
-            for (int i = 0; i < 7; i++)
-            { _stars[i].LoadContent(_content); }
             _loadingText.LoadContent(_content);
 
 
 
             _wood.LoadContent(_content);
-
-
+            __forestIntro.LoadContent(_content);
             _startButton.LoadContent(_content);
-            _quitButton.LoadContent(_content);
+            _difficultyButton.LoadContent(_content);
 
             /*
                         _menuSong = _content.Load<Song>("MenuSongWithLoop");
-                        MediaPlayer.IsRepeating = true;
                         MediaPlayer.Play(_menuSong);*/
 
-            _menuSong = _content.Load<Song>("MenuSong");
-
+            _introSong = _content.Load<Song>("IntroSong");
+            
 
             _menuUp = new InputAction(
                 new[] { Buttons.DPadUp, Buttons.LeftThumbstickUp },
@@ -119,28 +107,29 @@ namespace Game_Project_3.Screens
             _menuSelect = new InputAction(
                 new[] { Buttons.A, Buttons.Start },
                 new[] { Keys.Enter, Keys.Space }, true);
+                        MediaPlayer.IsRepeating = true;
 
-            MediaPlayer.Play(_menuSong);
+            MediaPlayer.Play(_introSong);
 
         }
 
 
-
+         
         public override void HandleInput(GameTime gameTime, InputState input)
         {
             if (_inputState.PriorMouseState.Position != _inputState.CurrentMouseState.Position)
             {
                 _startButton.IsSelected = false;
                 _startButton.Shade = Color.White;
-                _quitButton.IsSelected = false;
-                _quitButton.Shade = Color.White;
+                _difficultyButton.IsSelected = false;
+                _difficultyButton.Shade = Color.White;
             }
             else
             {
-                if (_startButton.IsSelected || _quitButton.IsSelected)
+                if (_startButton.IsSelected || _difficultyButton.IsSelected)
                 {
 
-                    ScreenManager.Game.IsMouseVisible = false;
+                    ScreenManager.Game.IsMouseVisible = true;
                 }
                 else ScreenManager.Game.IsMouseVisible = true;
 
@@ -148,34 +137,34 @@ namespace Game_Project_3.Screens
 
 
 
-            if (_quitButton.Bounds.CollidesWith(_inputState.Cursor) && _inputState.Clicked)
-                _quitButton.InitialClick = true;
+            if (_difficultyButton.Bounds.CollidesWith(_inputState.Cursor) && _inputState.Clicked)
+                _difficultyButton.InitialClick = true;
 
-            if (_quitButton.Bounds.CollidesWith(_inputState.Cursor) && _quitButton.InitialClick)
+            if (_difficultyButton.Bounds.CollidesWith(_inputState.Cursor) && _difficultyButton.InitialClick)
             {
                 if (_inputState.Clicking)
                 {
-                    _quitButton.Shade = Color.DarkGray;
+                    _difficultyButton.Shade = Color.DarkGray;
 
                 }
                 else
                 {
-                    _quitButton.Shade = Color.White;
+                    _difficultyButton.Shade = Color.White;
                 }
                 if (Mouse.GetState().LeftButton == ButtonState.Released)
                 {
-                    _quitButton.Shade = Color.DarkGray;
-                    _quitButton.InitialClick = false;
-                    QuitGame();
+                    _difficultyButton.Shade = Color.DarkGray;
+                    _difficultyButton.InitialClick = false;
+                    _difficultyButton.NextDifficulty();
                 }
             }
             else
             {
                 if (_inputState.CurrentMouseState.LeftButton == ButtonState.Released)
                 {
-                    _quitButton.InitialClick = false;
+                    _difficultyButton.InitialClick = false;
                 }
-                _quitButton.Shade = Color.White;
+                _difficultyButton.Shade = Color.White;
             }
 
             if (_startButton.Bounds.CollidesWith(_inputState.Cursor) && _inputState.Clicked)
@@ -216,17 +205,17 @@ namespace Game_Project_3.Screens
                 if (_startButton.IsSelected)
                 {
                     _startButton.IsSelected = false;
-                    _quitButton.IsSelected = true;
+                    _difficultyButton.IsSelected = true;
                 }
-                else if (_quitButton.IsSelected)
+                else if (_difficultyButton.IsSelected)
                 {
                     _startButton.IsSelected = true;
-                    _quitButton.IsSelected = false;
+                    _difficultyButton.IsSelected = false;
                 }
                 else
                 {
                     _startButton.IsSelected = true;
-                    _quitButton.IsSelected = false;
+                    _difficultyButton.IsSelected = false;
                 }
 
             }
@@ -237,17 +226,17 @@ namespace Game_Project_3.Screens
                 if (_startButton.IsSelected)
                 {
                     _startButton.IsSelected = false;
-                    _quitButton.IsSelected = true;
+                    _difficultyButton.IsSelected = true;
                 }
-                else if (_quitButton.IsSelected)
+                else if (_difficultyButton.IsSelected)
                 {
                     _startButton.IsSelected = true;
-                    _quitButton.IsSelected = false;
+                    _difficultyButton.IsSelected = false;
                 }
                 else
                 {
                     _startButton.IsSelected = false;
-                    _quitButton.IsSelected = true;
+                    _difficultyButton.IsSelected = true;
                 }
 
 
@@ -262,18 +251,19 @@ namespace Game_Project_3.Screens
                 }
                 else
                 {
-                    _quitButton.Shade = Color.DarkGray;
-                    QuitGame();
+                    _difficultyButton.Shade = Color.DarkGray;
+                    _difficultyButton.NextDifficulty();
                 }
+                        
             }
         }
 
         void StartGame()
         {
+            DifficultySettings.InitializeDifficulty();
             ScreenManager.Game.ResetElapsedTime();
             var gameplayScreen = new ExperimentalGame();
             ScreenManager.AddScreen(gameplayScreen, PlayerIndex.One);
-            MediaPlayer.Stop();
             ExitScreen();
         }
 
@@ -284,10 +274,10 @@ namespace Game_Project_3.Screens
             _timeSinceTransition = 0;
         }
 
-        void QuitGame()
+/*        void QuitGame()
         {
             ScreenManager.Game.Exit();
-        }
+        }*/
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
@@ -297,16 +287,14 @@ namespace Game_Project_3.Screens
 
             introProgress += gameTime.ElapsedGameTime;
 
-            if (_isTransitioning && _timeSinceTransition > 3000)
+            if (_isTransitioning && introProgress.TotalMilliseconds >= _introSong.Duration.TotalMilliseconds-1650)
             {
                 StartGame();
             }
 
-            if (introProgress.TotalMilliseconds >= _menuSong.Duration.TotalMilliseconds - 18)
+            if (introProgress.TotalMilliseconds >= _introSong.Duration.TotalMilliseconds - 1650)
             {
-                introProgress = TimeSpan.Zero;
-                MediaPlayer.Stop();
-                MediaPlayer.Play(_menuSong);
+                introProgress = TimeSpan.Zero - TimeSpan.FromMilliseconds(1600);
             }
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
@@ -325,16 +313,7 @@ namespace Game_Project_3.Screens
 
             // TODO: Add your update logic here
 
-            foreach (StarSprite star in _stars)
-            {
-                if (star.Bounds.CollidesWith(_wood.Bounds))
 
-                {
-                    star.Reset();
-                }
-                star.Update(gameTime);
-
-            }
         }
 
         public override void Deactivate()
@@ -349,17 +328,10 @@ namespace Game_Project_3.Screens
             var _spriteBatch = ScreenManager.SpriteBatch;
             _spriteBatch.Begin();
 
-            _sky.Draw(_spriteBatch);
-            _northernLight.Draw(_spriteBatch);
-
-
+            __forestIntro.Draw(_spriteBatch);
             _loadingText.Draw(_spriteBatch, gameTime);
 
 
-                for (int i = 0; i < 7; i++)
-                {
-                    _stars[i].Draw(gameTime, _spriteBatch);
-                }
             _spriteBatch.End();
 
             Matrix cameraUpTransform = Matrix.Identity;
@@ -377,7 +349,7 @@ namespace Game_Project_3.Screens
 
             _startButton.Draw(_spriteBatch);
 
-            _quitButton.Draw(_spriteBatch);
+            _difficultyButton.Draw(_spriteBatch);
             _spriteBatch.End();
 
 

@@ -1,69 +1,89 @@
 Used Assets Licenses and Credit:
 
-
-1- mushroom1wcolor.png
+1-staminabar.png
 -Creator: Ebraheem Mustafa
 -Licensing: Creative Commons Zero v1.0 Universal (public domain)
 
-2- step1.wav, step2.wav, step3.wav
+2-step1.wav, step2.wav, step3.wav
 -Creator: Ebraheem Mustafa
 -Licensing: Creative Commons Zero v1.0 Universal (public domain)
 
-3- PickupSound.wav
+3-dashsound.wav
 -Creator: Ebraheem Mustafa
 -Licensing: Creative Commons Zero v1.0 Universal (public domain)
 
-4- MenuSong.ogg
+4-wave.png, wave1.png(particle), wave2.png(particle), wave3.png(particle), wave4.png(particle)
+-Creator: Spacey Batotelli
+-Modified By: Ebraheem Mustafa (Reshaped main tidal wave to fit a certain curve, and resized to fit game screen more appropriately.)
+-Licensing: Non-commercial use / Educational Demonstration Purposes.
+-Link: https://x.com/SpaceyBat/status/1779271416237502610
+
+5-step1mud, step2mud.wav
+-Creator: kessir
+-Lightly Modified By Ebraheem Mustafa (sampled it with different pitch to differentiate between leftstep/rightstep)
+-Licensing: Creative Commons BY 4.0
+-Link: https://freesound.org/s/414551
+
+6-IntroSong.ogg
 -Creator: Ebraheem Mustafa
--Licensing: Not allowed for distribution of modification of any kind outside original game project.
+-Licensing: Not allowed for distribution/modification/sampling for commercial gain of any kind outside original game project.
 
-5- IngameSong.ogg
+7-IngameSong.ogg
 -Creator: Ebraheem Mustafa
--Licensing: Not allowed for distribution of modification of any kind outside original game project.
+-Licensing: Not allowed for distribution/modification/sampling for commercial gain of any kind outside original game project.
 
-6- clearsky.png
--Creator: https://craftpix.net/
--Licensing: Allowed for commercial and personal projects, allowed for modification.
-			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
-
-7- northernlight.png
--Creator: https://craftpix.net/
--Licensing: Allowed for commercial and personal projects, allowed for modification.
-			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
-
-8-stars.png
--Creator: https://craftpix.net/
--Modified by Ebraheem Mustafa (Star designs from above used background were extracted,
- redrawn and interpolated frame-wise manually.)
--Licensing: Allowed for commercial and personal projects, allowed for modification.
-			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
-
-9-MenuWood.png
+8-MenuWood.png
 -Creator: Narik/NarikTheArtist
 -Modified By Ebraheem Mustafa (It's been elongated horizontally to become shaped like a menu)
 -Licensing: Creative Commons Zero v1.0 Universal
 -Link: https://soulofkiran.itch.io/pixel-art-wooden-gui-v1
 
-10-WoodGUI.png
+9-WoodGUI.png
 -Creator: Narik/NarikTheArtist
+-Modified By Ebraheem Mustafa (Button and Text Manually drawn for difficulty)
 -Licensing: Creative Commons Zero v1.0 Universal
 -Link: https://soulofkiran.itch.io/pixel-art-wooden-gui-v1
 
-11-ninja.png
+10-ninja.png
 -Creator: Penusbmic
 -Modification: extrapolated 7th new frame for standing still.
 -Licensing: Allowed for coomercial use and modification.
 -Link:  https://penusbmic.itch.io/characterpack1
 
-12-ThaleahFat.ttf (font)
+11-ThaleahFat.ttf (font)
 -Creator: Rick Hoppmann
 -License: CC-BY 4.0 (free for commercial use, or any other purpose)
 -Link: https://tinyworlds.itch.io/free-pixel-font-thaleah
 
-13-game_background_1.png
+12-game_background_2.png
 -Creator: https://craftpix.net/
+-Modified By Ebraheem Mustafa (Extended map manually and manually drawn a finish to the map)
 -Licensing: Allowed for commercial and personal projects, allowed for modification.
 			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
 -Link: https://craftpix.net/freebies/free-forest-battle-backgrounds/
+
+13-lpc_wooden_bridge.png 
+-Creator: Xenodora
+-Modified By: AntumDeluge, Ebraheem Mustafa (extended bridge and added slight variations to the steps)
+-Licensing: CC BY-SA 4.0, GPL 3.0
+-Link: https://opengameart.org/content/lpc-wooden-bridge-rework
+-Remarks: It was used inside asset game_background_2.png
+
+14-mud.png
+-Creator: https://craftpix.net/
+-Modified By Ebraheem Mustafa (HEAVILY MODIFIED - Reshaped, Recolored, Redrawn, Resized, Added details)
+-Licensing: Allowed for commercial and personal projects, allowed for modification.
+			See Term 2.0 in https://craftpix.net/file-licenses/ for more detail.
+-Link:https://craftpix.net/freebies/free-cursed-land-top-down-pixel-art-tileset/
+
+15-spacebar.png
+-Creator: Ebraheem Mustafa
+-Licensing: Creative Commons Zero v1.0 Universal (public domain)
+
+16-buttonA.png
+-Creator: Mliu92
+-Modified by Ebraheem Mustafa (Changed inner background color to gray, and dark brown outside the circle)
+-Licensing: CC SA 4.0 International
+-Link: https://commons.wikimedia.org/wiki/File:Xbox_A_button_%28B%2BW%29.svg
 
 

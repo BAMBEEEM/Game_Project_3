@@ -17,6 +17,9 @@ using System.DirectoryServices.ActiveDirectory;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+using Game_Project_3.ParticleManagement;
+using Game_Project_3.Misc;
+using System.Drawing.Text;
 
 namespace Game_Project_3.Screens
 {
@@ -44,10 +47,13 @@ namespace Game_Project_3.Screens
         private CharacterSprite _mainCharacter;
         private SpriteFont spriteFont;
         private ForestSprite _forest;
+        private ForestFrontLayerSprite _forestFrontLayer;
+        private MainTidalWave _wave;
+        private MudSprite[] _mud = new MudSprite[13*DifficultySettings.MudPerSection];
+        private StaminaBarSprite _staminaSprite;
 
-        private int[] _mushroomsLeft = new int[_maxLevel];
+        // private int[] _mushroomsLeft = new int[_maxLevel];
         private int _finalScore;
-        private List<MushroomSprite>[] _mushrooms = new List<MushroomSprite>[_maxLevel];
 
         private bool _calculated = false;
 
@@ -65,17 +71,24 @@ namespace Game_Project_3.Screens
 
         private const int _maxLevel = 7;
 
+        private float _shakeTime;
 
-        enum MusicState { None, Intro, Loop };
-        MusicState currentState;
+        private float _drownTime;
 
+        private bool _isDrowning;
+
+        private float _startTimer = 1850;
 
         TimeSpan introProgress;
         Song _ingameSong;
 
-        SoundEffect _ending70ms;
-        SoundEffect _ending80ms;
-        SoundEffect _pickupSound;
+
+        OuterWaveParticlesOne _outerWaveEffectOne;
+        OuterWaveParticlesTwo _outerWaveEffectTwo;
+
+        InnerWaveParticlesOne _innerWaveEffectOne;
+        InnerWaveParticlesTwo _innerWaveEffectTwo;
+
         public ExperimentalGame()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -87,6 +100,9 @@ namespace Game_Project_3.Screens
                             new[] { Keys.Back }, true);*/
         }
 
+
+
+
         // Load graphics content for the game
         public override void Activate()
         {
@@ -96,17 +112,24 @@ namespace Game_Project_3.Screens
 
 
             _forest = new ForestSprite();
+            _forestFrontLayer = new ForestFrontLayerSprite();
+            _wave = new MainTidalWave();
+            _staminaSprite = new StaminaBarSprite();
+
+
+
+
 
             // TODO: Add your initialization logic here
-            for (int i = 0; i < _maxLevel; i++)
+            for (int i = 0; i < 13 * DifficultySettings.MudPerSection; i++)
             {
-                _mushrooms[i] = new List<MushroomSprite>();
-                _mushrooms[i].Capacity = 5 + i;
+                _mud[i] = new MudSprite();
+                _mud[i].Section = 1 + (i / DifficultySettings.MudPerSection);
+            }
 
-                for (int j = 0; j < _mushrooms[i].Capacity; j++)
-                {
-                    _mushrooms[i].Add(new MushroomSprite());
-                }
+            foreach (MudSprite mud in _mud)
+            {
+                mud.LoadContent(_content);
             }
 
             _finalScore = 0;
@@ -115,15 +138,33 @@ namespace Game_Project_3.Screens
 
             _mainCharacter.LoadContent(_content);
 
-            _mainCharacter.MaxOffsetX = (ScreenManager.GraphicsDevice.Viewport.Width)/ 0.26f * 1.6f;
+            _mainCharacter.MaxOffsetX = (ScreenManager.GraphicsDevice.Viewport.Width) ;
 
-            _mainCharacter.MaxOffsetY = (ScreenManager.GraphicsDevice.Viewport.Height)/0.26f * 1.6f;
+            _mainCharacter.MaxOffsetY = (ScreenManager.GraphicsDevice.Viewport.Height) ;
+
 
 
             spriteFont = _content.Load<SpriteFont>("retro");
             _forest.LoadContent(_content);
-            foreach (List<MushroomSprite> LMushroom in _mushrooms)
-                foreach (MushroomSprite mushroom in LMushroom) mushroom.LoadContent(_content);
+            _forestFrontLayer.LoadContent(_content);
+            _staminaSprite.LoadContent(_content);
+            _wave.LoadContent(_content);
+
+            _outerWaveEffectOne = new OuterWaveParticlesOne(this.ScreenManager.Game, new Rectangle((int)_wave.Position.X - 7, (int)_wave.Position.Y - 137, 0, 0));
+            _outerWaveEffectTwo = new OuterWaveParticlesTwo(this.ScreenManager.Game, new Rectangle((int)_wave.Position.X, (int)_wave.Position.Y - 130, 0, 0));
+
+            _innerWaveEffectOne = new InnerWaveParticlesOne(this.ScreenManager.Game, new Rectangle((int)_wave.Position.X + 60, (int)_wave.Position.Y + 430, 240, 203));
+            _innerWaveEffectTwo = new InnerWaveParticlesTwo(this.ScreenManager.Game, new Rectangle((int)_wave.Position.X + 60, (int)_wave.Position.Y + 430, 180, 233));
+
+            ScreenManager.Game.Components.Add(_outerWaveEffectOne);
+            ScreenManager.Game.Components.Add(_outerWaveEffectTwo);
+            ScreenManager.Game.Components.Add(_innerWaveEffectOne);
+            ScreenManager.Game.Components.Add(_innerWaveEffectTwo);
+
+
+
+            /*            foreach (List<MushroomSprite> LMushroom in _mushrooms)
+                            foreach (MushroomSprite mushroom in LMushroom) mushroom.LoadContent(_content);*/
             /*            // _gameFont = _content.Load<SpriteFont>("gamefont");
 
                         // A real game would probably have more content than this sample, so
@@ -137,9 +178,7 @@ namespace Game_Project_3.Screens
             ScreenManager.Game.ResetElapsedTime();
 
             _ingameSong = _content.Load<Song>("IngameSong");
-            _ending70ms = _content.Load<SoundEffect>("ending70ms");
-            _ending80ms = _content.Load<SoundEffect>("ending80ms");
-            _pickupSound = _content.Load<SoundEffect>("PickupSound");
+
 
 
             MediaPlayer.Play(_ingameSong);
@@ -159,9 +198,65 @@ namespace Game_Project_3.Screens
         // stop updating when the pause menu is active, or if you tab away to a different application.
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
+            _startTimer -= (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_startTimer > 18)
+            {
+                _mainCharacter.Stopped = true;
+            }
+            else if(_startTimer > -18) _mainCharacter.Stopped = false;
+
+
+            if (_mainCharacter.CurrentPosition.X > 13200)
+                _won = true;
 
             _mainCharacter.Color = Color.White; // default color
             _mainCharacter.Update(gameTime);
+            _staminaSprite.Stamina = _mainCharacter.Stamina;
+            _wave.Update(gameTime);
+            //very good for testing: if (CollisionHelper.Collides(new BoundingRectangle(Mouse.GetState().Position.X, Mouse.GetState().Position.Y, 1, 1), _mud.Bounds))
+
+            int loopCount = 0;
+            foreach (BoundingRectangle b in _wave.Bounds)
+            {
+                
+                if (_mainCharacter.Bounds.CollidesWith(b))
+                {
+                    _drownTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    _isDrowning = true;
+                    if (_drownTime >= DifficultySettings.DrownTime)
+                    {
+                        _lost = true;
+/*                        _mainCharacter.LossPosition = new Vector2(_wave.Position.X + 200, _wave.Position.Y + 300);
+*/                    }
+                    break;
+                }
+                else
+                {
+                    if (loopCount == 7)
+                    {
+                        _drownTime = 0;
+                        _isDrowning = false;
+                    }
+                } 
+
+                loopCount++;
+
+            }
+            foreach (MudSprite mud in _mud)
+                if (mud.Bounds.CollidesWith(_mainCharacter.Bounds))
+                {
+                    _mainCharacter.Slowed = true;
+                    //_mud.Color = Color.Red;
+                    break;
+                }
+                else _mainCharacter.Slowed = false;
+
+
+            _outerWaveEffectOne.BigWavePosition = new Vector2(_wave.Position.X - 7, _wave.Position.Y - 137);
+            _outerWaveEffectTwo.BigWavePosition = new Vector2(_wave.Position.X, _wave.Position.Y - 130);
+
+            _innerWaveEffectOne.BigWavePosition = new Vector2(_wave.Position.X + 60, _wave.Position.Y + 680);
+            _innerWaveEffectTwo.BigWavePosition = new Vector2(_wave.Position.X + 60, _wave.Position.Y + 680);
 
 
             introProgress += gameTime.ElapsedGameTime;
@@ -170,12 +265,7 @@ namespace Game_Project_3.Screens
             {
                 songDurationLeft.Add(TimeSpan.FromMilliseconds(introProgress.TotalMilliseconds - _ingameSong.Duration.TotalMilliseconds));
             }
-            if (songDurationLeft.Milliseconds > 75)
-            {
 
-                _ending80ms.Play();
-            }
-            else if (songDurationLeft.Milliseconds > 1) _ending70ms.Play();
             if (introProgress.TotalMilliseconds >= _ingameSong.Duration.TotalMilliseconds - 18)
             {
                 introProgress = TimeSpan.Zero;
@@ -187,120 +277,51 @@ namespace Game_Project_3.Screens
 
             // responsible for time limit
             while (!_hasBegun) gameTime.ElapsedGameTime = new TimeSpan();
-            double extratime = (level * 8) + level;
             _elapsedTime += gameTime.ElapsedGameTime;
             if (_elapsedTime.TotalMilliseconds < 18)
             {
-                foreach (MushroomSprite mushroom in _mushrooms[level - 1])
+
+                for (int i = 0; i < 13 * DifficultySettings.MudPerSection; i += DifficultySettings.MudPerSection)
                 {
-                    while (CollisionHelper.Closeness(mushroom.Position, _mainCharacter.CurrentPosition) < 85 * 1.6f)
+
+                    if (DifficultySettings.SetDifficulty == Enums.Difficulty.Normal || DifficultySettings.SetDifficulty == Enums.Difficulty.Hard)
                     {
-                        mushroom.Respawn();
+                        while (CollisionHelper.Collides(_mud[i].Bounds, _mud[i + 1].Bounds))
+                        {
+                            _mud[i + 1].Respawn();
+                        }
+                        while (CollisionHelper.Collides(_mud[i].Bounds, _mud[i + 2].Bounds))
+                            _mud[i].Respawn();
+
+                        while (CollisionHelper.Collides(_mud[i + 1].Bounds, _mud[i + 2].Bounds))
+                            _mud[i + 2].Respawn();
+                    }
+                    else // easy
+                    {
+                        while (CollisionHelper.Collides(_mud[i].Bounds, _mud[i + 1].Bounds))
+                        {
+                            _mud[i + 1].Respawn();
+                        }
                     }
                 }
                 _lost = false;
             }
             // responsible for time limit
-            if (!_won && !_lost)
+            if (_won)
             {
-                time = (System.TimeSpan.FromSeconds(5) + System.TimeSpan.FromSeconds(extratime)) - _elapsedTime;
-            }
-            else
-            {
+                _mainCharacter.WinManeuver = true;
                 _mainCharacter.Stopped = true; // charecter stops when game ends.
             }
 
-            if (time < System.TimeSpan.FromSeconds(0)) // game is lost if time ends.
-                _lost = true;
-
-            // Calculates number of mushrooms left that are not toxic
-            // Also resets and respawn the mushroom if it is poisonous and too close another mushroom
-            if (!_calculated)
+            else if (_lost)
             {
-                for (int i = 0; i < _maxLevel; i++)
-                {
-                    _mushroomsLeft[i] = 5 + i;
-
-                    for (int j = 0; j < _mushrooms[i].Capacity; j++)
-                    {
-
-                        if (_mushrooms[i][j].Poisonous)
-                        {
-                            _mushroomsLeft[i]--;
-                            int k = j - 1;
-
-                            while (k > 0)
-                            {
-                                k--;
-                                if (CollisionHelper.Closeness(_mushrooms[i][j].Position, _mushrooms[i][k].Position) < 100 * 1.6f)
-                                {
-                                    _mushrooms[i][j].Respawn();
-                                    k = j - 1;
-                                }
-                            }
-                        }
-                    }
-                }
-                _calculated = true;
-            }
-
-            List<MushroomSprite> currentLMushroom = _mushrooms[level - 1];
-
-            // needed to calculate light dimming in MushroomSprite
-            foreach (MushroomSprite mushroom in currentLMushroom)
-            {
-                mushroom.Closeness = CollisionHelper.Closeness(mushroom.Position - new Vector2(-11.1375f, -11.1375f),
-                    _mainCharacter.CurrentPosition);
-            }
-
-            //Detect and process collisions
-            foreach (MushroomSprite mushroom in currentLMushroom)
-            {
-                if (!mushroom.Collected && mushroom.Bounds.CollidesWith(_mainCharacter.Bounds) && !_lost && _elapsedTime.TotalMilliseconds > 70)
-                {
-                    if (!mushroom.Poisonous)
-                    {
-                        _mainCharacter.Color = Color.Gold;
-                        mushroom.Collected = true;
-                        _pickupSound.Play();
-                        _mushroomsLeft[level - 1]--;
-                        _finalScore++;
-                        _mainCharacter.CharBonusSpeed += 0.016f; //become faster with every mushroom
-                    }
-                    else
-                    {
-                        _mainCharacter.Poisoned = true;
-                        _lost = true;
-                    }
-                }
-
+                _mainCharacter.LossManeuver = true;
+                _mainCharacter.Stopped = true; // charecter stops when game ends.
+                _mainCharacter.Dead = true; // charecter dies.
 
             }
 
-            //advances to next level
-            if (_mushroomsLeft[level - 1] == 0 && level < _maxLevel)
-            {
-                level++;
-                _extraTime = gameTime.TotalGameTime + System.TimeSpan.FromSeconds(1);
-                foreach (MushroomSprite mushroom in _mushrooms[level - 1])
-                {
-                    while (CollisionHelper.Closeness(mushroom.Position, _mainCharacter.CurrentPosition) < 120 * 1.6f)
-                    {
-                        mushroom.Respawn();
-                    }
-                }
-            }
-            else if (level == _maxLevel && _mushroomsLeft[level - 1] == 0)
-            {
-                _won = true;
-            }
-
-            // makes time green to allude time increase
-            if (_extraTime > gameTime.TotalGameTime)
-
-                _timeColor = new Color(75, 200, 75);
-            else
-                _timeColor = Color.White;
+ 
 
 
             /*
@@ -386,62 +407,79 @@ namespace Game_Project_3.Screens
 
         public override void Draw(GameTime gameTime)
         {
+            _shakeTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
             var spriteBatch = ScreenManager.SpriteBatch;
 
             //GraphicsDevice.Clear(Color.Transparent);
-            List<MushroomSprite> currentLMushroom = _mushrooms[level - 1];
 
             //Calculate our offset vector
-            float playerX = MathHelper.Clamp(_mainCharacter.CurrentPosition.X, 300, 610);
-            float offsetX = 300 - playerX;
-            float playerY = MathHelper.Clamp(_mainCharacter.CurrentPosition.Y, 0, 330);
-            float offsetY = 240 - playerY;
+            float playerX = MathHelper.Clamp(_mainCharacter.CurrentPosition.X, 630, 13300);
+            float offsetX = 630 - playerX;
 
-            Matrix transform;
 
-/*            Matrix zoomTranslation = Matrix.CreateTranslation(-1280 / 2f, -720 / 2f, 0);
-            Matrix zoomTransform = zoomTranslation * Matrix.CreateScale(0.85f) * Matrix.Invert(zoomTranslation);
-*/
+            /*            Matrix zoomTranslation = Matrix.CreateTranslation(-1280 / 2f, -720 / 2f, 0);
+                        Matrix zoomTransform = zoomTranslation * Matrix.CreateScale(0.85f) * Matrix.Invert(zoomTranslation);
+            */
             // Background
-            transform = Matrix.CreateTranslation(offsetX, offsetY, 0) ;
-            spriteBatch.Begin(transformMatrix: transform);
-
-
-            _forest.Draw(spriteBatch);
-            //foreach (MushroomSprite mushroom in currentLMushroom) mushroom.Draw(gameTime, spriteBatch);
-            _mainCharacter.Draw(gameTime, spriteBatch);
+            spriteBatch.Begin();
+            _staminaSprite.Draw(spriteBatch);
             spriteBatch.End();
+            CameraSettings.transform = Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.WaveShakeEffect(_shakeTime) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning);
+
+
+            spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning));
+            _forest.Draw(spriteBatch);
+            for (int i = 0; i < 13 * DifficultySettings.MudPerSection; i++)
+                _mud[i].Draw(spriteBatch);
+/*            if (!_mainCharacter.Dead)
+*/                _mainCharacter.Draw(gameTime, spriteBatch);
+
+            spriteBatch.End();
+
+
+            spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.WaveShakeEffect(_shakeTime) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning));
+            _wave.Draw(spriteBatch);
+            _outerWaveEffectOne.Draw(spriteBatch);
+            _outerWaveEffectTwo.Draw(spriteBatch);
+            _innerWaveEffectOne.Draw(spriteBatch);
+            _innerWaveEffectTwo.Draw(spriteBatch);
+
+            spriteBatch.End();
+
+            spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning));
+
+            _forestFrontLayer.Draw(spriteBatch);
+
+/*            if (_mainCharacter.Dead)
+                _mainCharacter.Draw(gameTime, spriteBatch);*/
+
+
+            spriteBatch.End();
+
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            _staminaSprite.Draw(spriteBatch);
+
+            if (_startTimer <= 0)
+            { }
+/*            else if (_startTimer > 0)
+            {
+                spriteBatch.DrawString(spriteFont, "RUN! -->", new Vector2(355, 75) * 1.6f, Color.White);
+            }*/
+            else if (_startTimer > 0)
+            {
+                spriteBatch.DrawString(spriteFont, "RUN! -->", new Vector2(355, 75) * 1.6f, Color.White);
+            }
+
             if (_won)
             {
                 spriteBatch.DrawString(spriteFont, "You win!", new Vector2(335, 195) * 1.6f, Color.White);
-                spriteBatch.DrawString(spriteFont, $"Final Score: {_finalScore}", new Vector2(275, 220) * 1.6f, Color.White);
-            }
-            else if (!_lost)
-            {
-                //outlining text
-/*                spriteBatch.DrawString(spriteFont, $"Mushrooms left: {_mushroomsLeft[level - 1]}", new Vector2(239, 60) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Mushrooms left: {_mushroomsLeft[level - 1]}", new Vector2(241, 60) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Mushrooms left: {_mushroomsLeft[level - 1]}", new Vector2(240, 59) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Mushrooms left: {_mushroomsLeft[level - 1]}", new Vector2(240, 61) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Mushrooms left: {_mushroomsLeft[level - 1]}", new Vector2(240, 60) * 1.6f, Color.White);*/
-                spriteBatch.DrawString(spriteFont, $"Time Left: {time:ss'.'ff}", new Vector2(264, 20) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Time Left: {time:ss'.'ff}", new Vector2(266, 20) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Time Left: {time:ss'.'ff}", new Vector2(265, 19) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Time Left: {time:ss'.'ff}", new Vector2(265, 21) * 1.6f, Color.Black);
-                spriteBatch.DrawString(spriteFont, $"Time Left: {time:ss'.'ff}", new Vector2(265, 20) * 1.6f, _timeColor);
             }
             else if (_lost)
             {
-/*                Vector2 drawPosition; // to adjust text placement and center it
-                if (_finalScore < 10) drawPosition = new Vector2(310, 195) * 1.6f;
-                else drawPosition = new Vector2(320, 195) * 1.6f;*/
-
-
-                /*spriteBatch.DrawString(spriteFont, "You lost!", drawPosition, Color.White);
-                spriteBatch.DrawString(spriteFont, $"Final Score: {_finalScore}", new Vector2(275, 220) * 1.6f, Color.White);*/
+                spriteBatch.DrawString(spriteFont, "You Drowned!", new Vector2(288, 195) * 1.6f, Color.White);
             }
             spriteBatch.End();
 

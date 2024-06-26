@@ -12,7 +12,7 @@ namespace Game_Project_3.Background
 {
 
     /// <summary>
-    /// A class representing the static sky background.
+    /// A class representing the static forest background.
     /// </summary>
     public class ForestSprite
     {
@@ -24,7 +24,7 @@ namespace Game_Project_3.Background
 
         public BoundingRectangle Bounds => _bounds; //not used
 
-        public Color color = Color.White;
+        public Color color = Color.Gray;
 
 
         public void LoadContent(ContentManager content)
@@ -34,7 +34,7 @@ namespace Game_Project_3.Background
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, null, color, 0, new Vector2(0, 0), (float)0.26f*1.6f, SpriteEffects.None, 1);
+            spriteBatch.Draw(texture, position, null, color, 0, new Vector2(0, 0), (float)1, SpriteEffects.None, 0.3f);
         }
     }
 }
