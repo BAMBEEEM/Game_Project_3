@@ -104,10 +104,10 @@ namespace Game_Project_3.Misc
 
                 DrownTime = 1250;
 
-                InnerWaveParticleOneAccelerationX = -105;
+                InnerWaveParticleOneAccelerationX = -95;
 
                 InnerWaveParticleTwoDirectionX = 0.3f;
-                InnerWaveParticleTwoAccelerationX = -115;
+                InnerWaveParticleTwoAccelerationX = -105;
             }
         }
 

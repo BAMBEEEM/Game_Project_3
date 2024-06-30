@@ -49,7 +49,7 @@ namespace Game_Project_3.Screens
         private ForestSprite _forest;
         private ForestFrontLayerSprite _forestFrontLayer;
         private MainTidalWave _wave;
-        private MudSprite[] _mud = new MudSprite[13*DifficultySettings.MudPerSection];
+        private MudSprite[] _mud = new MudSprite[13 * DifficultySettings.MudPerSection];
         private StaminaBarSprite _staminaSprite;
 
         private bool _won = false;
@@ -123,9 +123,9 @@ namespace Game_Project_3.Screens
 
             _mainCharacter.LoadContent(_content);
 
-            _mainCharacter.MaxOffsetX = (ScreenManager.GraphicsDevice.Viewport.Width) ;
+            _mainCharacter.MaxOffsetX = (ScreenManager.GraphicsDevice.Viewport.Width);
 
-            _mainCharacter.MaxOffsetY = (ScreenManager.GraphicsDevice.Viewport.Height) ;
+            _mainCharacter.MaxOffsetY = (ScreenManager.GraphicsDevice.Viewport.Height);
 
 
 
@@ -187,7 +187,7 @@ namespace Game_Project_3.Screens
             {
                 _mainCharacter.Stopped = true;
             }
-            else if(_startTimer > -18) _mainCharacter.Stopped = false;
+            else if (_startTimer > -18) _mainCharacter.Stopped = false;
 
 
             if (_mainCharacter.CurrentPosition.X > 13200)
@@ -202,7 +202,7 @@ namespace Game_Project_3.Screens
             int loopCount = 0;
             foreach (BoundingRectangle b in _wave.Bounds)
             {
-                
+
                 if (_mainCharacter.Bounds.CollidesWith(b))
                 {
                     _drownTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -210,8 +210,9 @@ namespace Game_Project_3.Screens
                     if (_drownTime >= DifficultySettings.DrownTime)
                     {
                         _lost = true;
-/*                        _mainCharacter.LossPosition = new Vector2(_wave.Position.X + 200, _wave.Position.Y + 300);
-*/                    }
+                        /*                        _mainCharacter.LossPosition = new Vector2(_wave.Position.X + 200, _wave.Position.Y + 300);
+                        */
+                    }
                     break;
                 }
                 else
@@ -221,7 +222,7 @@ namespace Game_Project_3.Screens
                         _drownTime = 0;
                         _isDrowning = false;
                     }
-                } 
+                }
 
                 loopCount++;
 
@@ -305,7 +306,7 @@ namespace Game_Project_3.Screens
 
             }
 
- 
+
 
 
             /*
@@ -413,11 +414,13 @@ namespace Game_Project_3.Screens
 
 
             spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning));
+
             _forest.Draw(spriteBatch);
             for (int i = 0; i < 13 * DifficultySettings.MudPerSection; i++)
+            {
                 _mud[i].Draw(spriteBatch);
-/*            if (!_mainCharacter.Dead)
-*/                _mainCharacter.Draw(gameTime, spriteBatch);
+            }
+            _mainCharacter.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
@@ -426,6 +429,10 @@ namespace Game_Project_3.Screens
             _wave.Draw(spriteBatch);
             _outerWaveEffectOne.Draw(spriteBatch);
             _outerWaveEffectTwo.Draw(spriteBatch);
+            spriteBatch.End();
+
+            spriteBatch.Begin(blendState: BlendState.Additive, transformMatrix: Matrix.CreateTranslation(offsetX, 0, 0) * CameraSettings.WaveShakeEffect(_shakeTime) * CameraSettings.DrownShakeEffect(_shakeTime, _isDrowning));
+
             _innerWaveEffectOne.Draw(spriteBatch);
             _innerWaveEffectTwo.Draw(spriteBatch);
 
@@ -435,8 +442,8 @@ namespace Game_Project_3.Screens
 
             _forestFrontLayer.Draw(spriteBatch);
 
-/*            if (_mainCharacter.Dead)
-                _mainCharacter.Draw(gameTime, spriteBatch);*/
+            /*            if (_mainCharacter.Dead)
+                            _mainCharacter.Draw(gameTime, spriteBatch);*/
 
 
             spriteBatch.End();
